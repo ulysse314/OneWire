@@ -98,6 +98,8 @@ sample code bearing this copyright.
 
 #include "OneWire.h"
 
+#include <Arduino.h>
+
 OneWire::OneWire(uint8_t pin) {
 	pinMode(pin, INPUT);
 	bitmask = PIN_TO_BITMASK(pin);
