@@ -38,9 +38,6 @@
 #define ONEWIRE_CRC16 1
 #endif
 
-#define FALSE 0
-#define TRUE  1
-
 // Platform specific I/O definitions
 
 #if defined(__AVR__)
@@ -209,7 +206,7 @@ class OneWire
     // might be a good idea to check the CRC to make sure you didn't
     // get garbage.  The order is deterministic. You will always get
     // the same devices in the same order.
-    uint8_t search(uint8_t *newAddr);
+    uint8_t search(OneWireAddress newAddr);
 #endif
 
 #if ONEWIRE_CRC

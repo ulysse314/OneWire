@@ -100,6 +100,9 @@ sample code bearing this copyright.
 
 #include <Arduino.h>
 
+#define FALSE 0
+#define TRUE  1
+
 OneWire::OneWire(uint8_t pin) {
 	pinMode(pin, INPUT);
 	bitmask = PIN_TO_BITMASK(pin);
