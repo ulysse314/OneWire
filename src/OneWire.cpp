@@ -112,14 +112,14 @@ OneWire::OneWire(uint8_t pin) {
 #endif
 }
 
-int OneWire::find_address(OneWireAddress address) {
+bool OneWire::find_address(OneWireAddress address) {
   while (1) {
     if (!this->search(address)) {
       this->reset_search();
-      return 0;
+      return false;
     }
     if (OneWire::crc8(address, 7) == address[7]) {
-      return 1;
+      return true;
     }
   }
 }
@@ -319,10 +319,11 @@ void OneWire::reset_search()
 // Return TRUE  : device found, ROM number in ROM_NO buffer
 //        FALSE : device not found, end of search
 //
-uint8_t OneWire::search(OneWireAddress newAddr)
+bool OneWire::search(OneWireAddress newAddr)
 {
    uint8_t id_bit_number;
-   uint8_t last_zero, rom_byte_number, search_result;
+   uint8_t last_zero, rom_byte_number;
+   bool search_result;
    uint8_t id_bit, cmp_id_bit;
 
    unsigned char rom_byte_mask, search_direction;
@@ -332,7 +333,7 @@ uint8_t OneWire::search(OneWireAddress newAddr)
    last_zero = 0;
    rom_byte_number = 0;
    rom_byte_mask = 1;
-   search_result = 0;
+   search_result = false;
 
    // if the last call was not the last one
    if (!LastDeviceFlag)
@@ -344,7 +345,7 @@ uint8_t OneWire::search(OneWireAddress newAddr)
          LastDiscrepancy = 0;
          LastDeviceFlag = FALSE;
          LastFamilyDiscrepancy = 0;
-         return FALSE;
+         return false;
       }
 
       // issue the search command
@@ -421,7 +422,7 @@ uint8_t OneWire::search(OneWireAddress newAddr)
          if (LastDiscrepancy == 0)
             LastDeviceFlag = TRUE;
 
-         search_result = TRUE;
+         search_result = true;
       }
    }
 
@@ -431,7 +432,7 @@ uint8_t OneWire::search(OneWireAddress newAddr)
       LastDiscrepancy = 0;
       LastDeviceFlag = FALSE;
       LastFamilyDiscrepancy = 0;
-      search_result = FALSE;
+      search_result = false;
    }
    for (int i = 0; i < 8; i++) newAddr[i] = ROM_NO[i];
    return search_result;

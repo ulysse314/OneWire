@@ -152,7 +152,7 @@ class OneWire
   public:
     OneWire(uint8_t pin);
 
-    int find_address(OneWireAddress address);
+    bool find_address(OneWireAddress address);
 
     // Perform a 1-Wire reset cycle. Returns 1 if a device responds
     // with a presence pulse.  Returns 0 if there is no device or the
@@ -206,7 +206,7 @@ class OneWire
     // might be a good idea to check the CRC to make sure you didn't
     // get garbage.  The order is deterministic. You will always get
     // the same devices in the same order.
-    uint8_t search(OneWireAddress newAddr);
+    bool search(OneWireAddress newAddr);
 #endif
 
 #if ONEWIRE_CRC
