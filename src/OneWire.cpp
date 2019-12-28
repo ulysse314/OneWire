@@ -100,9 +100,6 @@ sample code bearing this copyright.
 
 #include <Arduino.h>
 
-#define FALSE 0
-#define TRUE  1
-
 OneWire::OneWire(uint8_t pin) {
 	pinMode(pin, INPUT);
 	bitmask = PIN_TO_BITMASK(pin);
@@ -294,7 +291,7 @@ void OneWire::reset_search()
   {
   // reset the search state
   LastDiscrepancy = 0;
-  LastDeviceFlag = FALSE;
+  LastDeviceFlag = false;
   LastFamilyDiscrepancy = 0;
   for(int i = 7; ; i--)
     {
@@ -343,7 +340,7 @@ bool OneWire::search(OneWireAddress newAddr)
       {
          // reset the search
          LastDiscrepancy = 0;
-         LastDeviceFlag = FALSE;
+         LastDeviceFlag = false;
          LastFamilyDiscrepancy = 0;
          return false;
       }
@@ -420,7 +417,7 @@ bool OneWire::search(OneWireAddress newAddr)
 
          // check for last device
          if (LastDiscrepancy == 0)
-            LastDeviceFlag = TRUE;
+            LastDeviceFlag = true;
 
          search_result = true;
       }
@@ -430,7 +427,7 @@ bool OneWire::search(OneWireAddress newAddr)
    if (!search_result || !ROM_NO[0])
    {
       LastDiscrepancy = 0;
-      LastDeviceFlag = FALSE;
+      LastDeviceFlag = false;
       LastFamilyDiscrepancy = 0;
       search_result = false;
    }

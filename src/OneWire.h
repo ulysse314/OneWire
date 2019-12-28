@@ -146,7 +146,7 @@ class OneWire
     unsigned char ROM_NO[8];
     uint8_t LastDiscrepancy;
     uint8_t LastFamilyDiscrepancy;
-    uint8_t LastDeviceFlag;
+    bool LastDeviceFlag;
 #endif
 
   public:
