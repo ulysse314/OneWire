@@ -109,7 +109,7 @@ OneWire::OneWire(uint8_t pin) {
 #endif
 }
 
-int OneWire::find_address(uint8_t *address) {
+int OneWire::find_address(OneWireAddress address) {
   while (1) {
     if (!this->search(address)) {
       this->reset_search();
@@ -257,7 +257,7 @@ void OneWire::read_bytes(uint8_t *buf, uint16_t count) {
 //
 // Do a ROM select
 //
-void OneWire::select(const uint8_t rom[8])
+void OneWire::select(const OneWireAddress rom)
 {
     int i;
 
@@ -316,7 +316,7 @@ void OneWire::reset_search()
 // Return TRUE  : device found, ROM number in ROM_NO buffer
 //        FALSE : device not found, end of search
 //
-uint8_t OneWire::search(uint8_t *newAddr)
+uint8_t OneWire::search(OneWireAddress newAddr)
 {
    uint8_t id_bit_number;
    uint8_t last_zero, rom_byte_number, search_result;

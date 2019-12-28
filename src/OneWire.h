@@ -132,12 +132,11 @@
 #warning "OneWire. Fallback mode. __arc__"
     IO_REG_TYPE bitmask;
 
-
-
 #else
 #error "Please define I/O register types here"
 #endif
 
+typedef uint8_t OneWireAddress[8];
 
 class OneWire
 {
@@ -154,9 +153,9 @@ class OneWire
 #endif
 
   public:
-    OneWire( uint8_t pin);
+    OneWire(uint8_t pin);
 
-    int find_address(uint8_t *address);
+    int find_address(OneWireAddress address);
 
     // Perform a 1-Wire reset cycle. Returns 1 if a device responds
     // with a presence pulse.  Returns 0 if there is no device or the
@@ -164,7 +163,7 @@ class OneWire
     uint8_t reset();
 
     // Issue a 1-Wire rom select command, you do the reset first.
-    void select(const uint8_t rom[8]);
+    void select(const OneWireAddress rom);
 
     // Issue a 1-Wire rom skip command, to address all on bus.
     void skip();
