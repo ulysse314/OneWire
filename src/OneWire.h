@@ -133,26 +133,21 @@
 #error "Please define I/O register types here"
 #endif
 
-typedef uint8_t OneWireAddress[8];
-
 class OneWire
 {
-  private:
-    IO_REG_TYPE bitmask;
-    volatile IO_REG_TYPE *baseReg;
-
-#if ONEWIRE_SEARCH
-    // global search state
-    unsigned char ROM_NO[8];
-    uint8_t LastDiscrepancy;
-    uint8_t LastFamilyDiscrepancy;
-    bool LastDeviceFlag;
-#endif
-
   public:
+    class Address {
+      public:
+        Address() : Address(0, 0, 0, 0, 0, 0, 0, 0) {};
+        Address(uint8_t b0, uint8_t b1, uint8_t b2, uint8_t b3, uint8_t b4, uint8_t b5, uint8_t b6, uint8_t b7) {
+          data[0] = b0; data[1] = b1; data[2] = b2; data[3] = b3; data[4] = b4; data[5] = b5; data[6] = b6; data[7] = b7;
+        };
+        uint8_t data[8];
+    };
+
     OneWire(uint8_t pin);
 
-    bool find_address(OneWireAddress address);
+    bool find_address(Address address);
 
     // Perform a 1-Wire reset cycle. Returns 1 if a device responds
     // with a presence pulse.  Returns 0 if there is no device or the
@@ -160,7 +155,7 @@ class OneWire
     uint8_t reset();
 
     // Issue a 1-Wire rom select command, you do the reset first.
-    void select(const OneWireAddress rom);
+    void select(const Address rom);
 
     // Issue a 1-Wire rom skip command, to address all on bus.
     void skip();
@@ -206,7 +201,7 @@ class OneWire
     // might be a good idea to check the CRC to make sure you didn't
     // get garbage.  The order is deterministic. You will always get
     // the same devices in the same order.
-    bool search(OneWireAddress newAddr);
+    bool search(Address newAddr);
 #endif
 
 #if ONEWIRE_CRC
@@ -251,6 +246,18 @@ class OneWire
     // @return The CRC16, as defined by Dallas Semiconductor.
     static uint16_t crc16(const uint8_t* input, uint16_t len);
 #endif
+#endif
+
+  private:
+    IO_REG_TYPE bitmask;
+    volatile IO_REG_TYPE *baseReg;
+
+#if ONEWIRE_SEARCH
+    // global search state
+    Address ROM_NO;
+    uint8_t LastDiscrepancy;
+    uint8_t LastFamilyDiscrepancy;
+    bool LastDeviceFlag;
 #endif
 };
 

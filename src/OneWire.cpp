@@ -109,13 +109,13 @@ OneWire::OneWire(uint8_t pin) {
 #endif
 }
 
-bool OneWire::find_address(OneWireAddress address) {
+bool OneWire::find_address(Address address) {
   while (1) {
     if (!this->search(address)) {
       this->reset_search();
       return false;
     }
-    if (OneWire::crc8(address, 7) == address[7]) {
+    if (OneWire::crc8(address.data, 7) == address.data[7]) {
       return true;
     }
   }
@@ -257,13 +257,13 @@ void OneWire::read_bytes(uint8_t *buf, uint16_t count) {
 //
 // Do a ROM select
 //
-void OneWire::select(const OneWireAddress rom)
+void OneWire::select(const Address rom)
 {
     int i;
 
     write(0x55);           // Choose ROM
 
-    for( i = 0; i < 8; i++) write(rom[i]);
+    for( i = 0; i < 8; i++) write(rom.data[i]);
 }
 
 //
@@ -295,7 +295,7 @@ void OneWire::reset_search()
   LastFamilyDiscrepancy = 0;
   for(int i = 7; ; i--)
     {
-    ROM_NO[i] = 0;
+    ROM_NO.data[i] = 0;
     if ( i == 0) break;
     }
   }
@@ -316,7 +316,7 @@ void OneWire::reset_search()
 // Return TRUE  : device found, ROM number in ROM_NO buffer
 //        FALSE : device not found, end of search
 //
-bool OneWire::search(OneWireAddress newAddr)
+bool OneWire::search(Address newAddr)
 {
    uint8_t id_bit_number;
    uint8_t last_zero, rom_byte_number;
@@ -368,7 +368,7 @@ bool OneWire::search(OneWireAddress newAddr)
                // if this discrepancy if before the Last Discrepancy
                // on a previous next then pick the same as last time
                if (id_bit_number < LastDiscrepancy)
-                  search_direction = ((ROM_NO[rom_byte_number] & rom_byte_mask) > 0);
+                  search_direction = ((ROM_NO.data[rom_byte_number] & rom_byte_mask) > 0);
                else
                   // if equal to last pick 1, if not then pick 0
                   search_direction = (id_bit_number == LastDiscrepancy);
@@ -387,9 +387,9 @@ bool OneWire::search(OneWireAddress newAddr)
             // set or clear the bit in the ROM byte rom_byte_number
             // with mask rom_byte_mask
             if (search_direction == 1)
-              ROM_NO[rom_byte_number] |= rom_byte_mask;
+              ROM_NO.data[rom_byte_number] |= rom_byte_mask;
             else
-              ROM_NO[rom_byte_number] &= ~rom_byte_mask;
+              ROM_NO.data[rom_byte_number] &= ~rom_byte_mask;
 
             // serial number search direction write bit
             write_bit(search_direction);
@@ -424,14 +424,14 @@ bool OneWire::search(OneWireAddress newAddr)
    }
 
    // if no device found then reset counters so next 'search' will be like a first
-   if (!search_result || !ROM_NO[0])
+   if (!search_result || !ROM_NO.data[0])
    {
       LastDiscrepancy = 0;
       LastDeviceFlag = false;
       LastFamilyDiscrepancy = 0;
       search_result = false;
    }
-   for (int i = 0; i < 8; i++) newAddr[i] = ROM_NO[i];
+   newAddr = ROM_NO;
    return search_result;
   }
 
@@ -492,7 +492,7 @@ uint8_t OneWire::crc8(const uint8_t *addr, uint8_t len)
 // Compute a Dallas Semiconductor 8 bit CRC directly.
 // this is much slower, but much smaller, than the lookup table.
 //
-uint8_t OneWire::crc8( uint8_t *addr, uint8_t len)
+uint8_t OneWire::crc8(const uint8_t *addr, uint8_t len)
 {
 	uint8_t crc = 0;
 	
